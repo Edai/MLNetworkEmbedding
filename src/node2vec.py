@@ -7,7 +7,7 @@ from sklearn.linear_model import LogisticRegression
 
 class Node2Vec:
 
-    def __init__(self, A, d = 128, r = 10, l = 80, k = 10, p = 0.01, q = 1):
+    def __init__(self, A, d = 128, r = 10, l = 80, k = 10, p = 4, q = 0.25):
         self.edges, self.nodes = [], []
         self.graph = {}
         self.adjacents = defaultdict(list)
@@ -23,7 +23,7 @@ class Node2Vec:
         y_train, y_val, y_test, idx_train, idx_val, idx_test = data.get_splits(y)
         x_train, x_val, x_test, idx_train, idx_val, idx_test = data.get_splits(x)
 
-        regression = LogisticRegression(C=0.1, n_jobs=4)
+        regression = LogisticRegression()
         regression.fit(x_train, y_train)
         print("Result from validation data : ", regression.score(x_val, y_val))
         print("Result from test data : ", regression.score(x_test, y_test))
@@ -66,7 +66,7 @@ class Node2Vec:
         return J, q
 
     def get_alias_edge(self, source, target, p, q):
-        edge_weights = []
+        edge_weights, s, l = [], [], []
         for t in sorted(self.adjacents[target]):
             f = self.graph[target][t]['weight']
             if t == source:
@@ -78,9 +78,6 @@ class Node2Vec:
             edge_weights.append(f)
         total = sum(edge_weights)
         normalized_edge_weights = [float(weight)/total for weight in edge_weights]
-
-        s = []
-        l = []
         n = len(normalized_edge_weights)
         q = np.zeros(n)
         J = np.zeros(n, dtype=np.int)
@@ -102,10 +99,10 @@ class Node2Vec:
         return J, q
 
     def preprocess_modified_weights(self, p, q):
+        nodes_p, edges_p = {}, {}
         M = len(self.nodes)
         N = len(self.edges)
         prob = 1.0 / len(self.nodes)
-        nodes_p, edges_p = {}, {}
         for i in range(M):
             v = self.nodes[i]
             nodes_p[v] = self.alias_setup(prob, len(self.adjacents[v]))
