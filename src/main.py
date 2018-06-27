@@ -19,7 +19,7 @@ def line_tencent():
 def node2vec_cora():
     X, A, y = data.load_data(dataset='cora')
     node2vec = nv.Node2Vec(A)
-    return node2vec.train()
+    return node2vec.train(y)
 
 def main():
     #deep_walk_cora()
