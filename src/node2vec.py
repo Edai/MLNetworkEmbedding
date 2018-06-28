@@ -1,9 +1,10 @@
 import data
 import numpy as np
-from random import shuffle, Random
+from random import shuffle
 from collections import defaultdict
 from gensim.models import Word2Vec
 from sklearn.linear_model import LogisticRegression
+
 
 class Node2Vec:
 
@@ -32,7 +33,7 @@ class Node2Vec:
     def learn_features(self, d, r, l, k, p, q):
         nodes_p, edges_p = self.preprocess_modified_weights(p, q)
         walks = []
-        print("Preprocessing done...")
+        print("Node2Vec's preprocessing done...")
         for i in range(r):
              shuffle(self.nodes)
              for n in self.nodes:

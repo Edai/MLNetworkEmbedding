@@ -9,7 +9,7 @@ def encode_onehot(labels):
     return labels_onehot
 
 
-def load_data(path="data/cora/", dataset="cora"):
+def load_data(path="data/cora/", dataset="cora", file_tencent=""):
     """Load citation network dataset (cora only for now)"""
     print('Loading {} dataset...'.format(dataset))
     if (dataset == "cora"):
@@ -32,8 +32,8 @@ def load_data(path="data/cora/", dataset="cora"):
         print('Dataset has {} nodes, {} edges, {} features.'.format(adj.shape[0], edges.shape[0], features.shape[1]))
         return features.todense(), adj, labels;
     else:
-        edges = np.load(path + 'train_edges.npy')
-        return edges, np.unique(edges[:, 0])
+        data = sp.load_npz(path + file_tencent)
+        return data
 
 
 def get_splits(y):
